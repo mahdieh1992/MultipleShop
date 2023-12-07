@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <title>{% block title %}{% endblock %}</title>
+    {% include 'include/head_tag.html' %}
+
+</head>
+
+<body>
+    <!-- Topbar Start -->
+    {% include 'include/Topbar_tag.html' %}
+    <!-- Topbar End -->
+
+
+    <!-- Navbar Start -->
+    {% include 'include/Navbar_tag.html' %}
+    <!-- Navbar End -->
+
+
+    {% block content %}
+
+    {% endblock %}
+
+    <!-- Vendor Start -->
+
+    <!-- Vendor End -->
+
+
+    <!-- Footer Start -->
+        {% include 'include/Footer_tag.html' %}
+    <!-- Footer End -->
+
+</body>
+
+</html>

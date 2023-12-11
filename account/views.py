@@ -1,8 +1,37 @@
+import datetime
+
 from django.shortcuts import render,redirect
-from django.contrib.auth import login,logout,authenticate
+from django.contrib.auth import login,logout,authenticate,get_user_model
 from django.views.generic import View
-from .forms import FormLoginUser
-from .models import CustomUser
+from .forms import FormLoginUser,RegisterUserForm,ForgetPasswordUser
+from .models import CustomUser,ForgetPassUser
+from random import randint
+from melipayamak import Api
+from datetime import datetime,timedelta
+from django.contrib import messages
+def RgisterUser(request):
+    form=RegisterUserForm()
+    if request.method=='POST':
+        form=RegisterUserForm(request.POST)
+        if form.is_valid():
+            fir = form.cleaned_data['Firstname']
+            print(fir)
+            email=form.cleaned_data['email']
+            mobile = form.cleaned_data['Mobile']
+            nationalcode = form.cleaned_data['NationalCode']
+            if CustomUser.objects.filter(email=email).exists():
+                form.add_error('email','email is already registered')
+            elif CustomUser.objects.filter(Mobile=mobile).exists():
+                form.add_error('Mobile', 'Mobile is already registered')
+            elif CustomUser.objects.filter(NationalCode=nationalcode).exists():
+                form.add_error('NationalCode', 'NationalCode is already registered')
+            else:
+                user=form.save(commit=False)
+                user.Username=user.email
+                user.save()
+                return redirect('account:login')
+    return render(request, 'account/register.html', {
+                'form': form})
 
 
 class LoginUser(View):
@@ -14,6 +43,7 @@ class LoginUser(View):
 
     def post(self,request):
         form=FormLoginUser(request.POST)
+
         if form.is_valid():
             email=form.cleaned_data['email']
             password=form.cleaned_data['password']
@@ -36,3 +66,53 @@ class LoginUser(View):
 def LogoutUser(request):
     logout(request)
     return redirect('account:login')
+
+
+class ForgetPassView(View):
+    def get(self,request):
+        form=ForgetPasswordUser()
+        return render(request, 'account/ForgetPassword.html', {
+            'form': form
+        })
+
+    def post(self,request):
+        form=ForgetPasswordUser(request.POST)
+        if form.is_valid():
+            mobile=form.cleaned_data['Mobile']
+            if CustomUser.objects.filter(Mobile=mobile).exists():
+                rand=randint(10000,99999)
+                now=datetime.now()
+                now5=now+timedelta(minutes=2)
+                ForgetPassUser.objects.create(mobile=mobile,code=rand,ExpireTime=now5)
+                username = '09122435833'
+                password = 'qweQWE123!@#'
+                api = Api(username, password)
+                sms = api.sms()
+                to = mobile
+                _from = '50004001435833'
+                text = f'Your code is {rand}'
+                response = sms.send(to, _from, text)
+                print(response)
+                return redirect('account:Confirm')
+            form.add_error('Mobile',f'{mobile} is not valid')
+
+        return render(request,'account/ForgetPassword.html',{
+            'form':form
+        })
+
+
+class ConfirmCode(View):
+    def get(self,request):
+        return render(request,'account/Confirm.html',{
+
+        })
+
+    def post(self,request):
+        confirmcode=request.POST['code']
+        if ForgetPassUser.objects.filter(code=confirmcode).exists():
+            return redirect('Home:main')
+
+        messages.info(request,f'{confirmcode} is not valid')
+        return render(request, 'account/Confirm.html', {
+
+            })

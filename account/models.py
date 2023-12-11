@@ -7,13 +7,17 @@ from .managers import CustomUserManager
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+    choise=[
+        ('1','زن'),
+        ('0', 'مرد')
+    ]
     Username = models.CharField(max_length=50)
     Firstname = models.CharField(max_length=50,null=True)
     Lastname = models.CharField(max_length=50,null=True)
     NationalCode = models.CharField(max_length=10,null=True)
-    Gender = models.BooleanField(default=True)
+    Gender = models.CharField(choices=choise)
     Mobile = models.CharField(max_length=11,null=True)
-    Address = models.CharField(max_length=200)
+    Address = models.CharField(max_length=200,null=True)
     ExpireDate = models.DateTimeField(null=True)
     email = models.CharField(_("email address"), unique=True)
     is_staff = models.BooleanField(default=False)
@@ -27,3 +31,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+class ForgetPassUser(models.Model):
+    mobile=models.CharField(max_length=11)
+    code=models.IntegerField()
+    ExpireTime=models.DateTimeField()
+
+
+

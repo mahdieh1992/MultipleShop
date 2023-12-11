@@ -1,5 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from .models import CustomUser
 
 
 class FormLoginUser(forms.Form):
@@ -23,4 +24,81 @@ class FormLoginUser(forms.Form):
             )
 
 
+class RegisterUserForm(forms.ModelForm):
 
+    ConfirmPassword = forms.CharField(widget=forms.PasswordInput(attrs={
+        'placeholder': 'ConfirmPassword',
+        'class': 'form-control'
+    }))
+
+    class Meta:
+        choise = [
+            ('1', 'زن'),
+            ('0', 'مرد')
+        ]
+
+        model=CustomUser
+        fields=('Firstname','Lastname','NationalCode','password','ConfirmPassword','Mobile','Address','email','Gender')
+        widgets={
+
+            'Firstname': forms.TextInput(attrs={
+                'placeholder': 'Firstname',
+                'class': 'form-control',
+            }),
+
+            'Lastname':forms.TextInput(attrs={
+               'placeholder':'Lastname',
+               'class':'form-control'
+              }),
+            'NationalCode':forms.TextInput(attrs={
+               'placeholder':'NationalCode',
+               'class':'form-control'
+
+              }),
+            'Mobile':forms.TextInput(attrs={
+               'placeholder':'Mobile',
+               'class':'form-control'
+              }),
+            'Address':forms.TextInput(attrs={
+               'placeholder':'Address',
+               'class':'form-control'
+              }),
+            'password': forms.PasswordInput(attrs={
+                'placeholder': 'Password',
+                'class': 'form-control',
+
+            }),
+
+            'email':forms.TextInput(attrs={
+               'placeholder':'email',
+               'class':'form-control'
+              }),
+            'Gender':forms.Select(choices=choise,attrs={
+                 'class':'form-control col-2'
+            })
+        }
+
+    def clean(self):
+        password=self.cleaned_data['password']
+        ConfirmPassword=self.cleaned_data['ConfirmPassword']
+        if password!=ConfirmPassword:
+            raise ValidationError(
+                'Password and ConfirmPassword not match',
+                  code=2
+            )
+
+    def __init__(self,*args,**kwargs):
+        super(RegisterUserForm, self).__init__(*args,**kwargs)
+        self.fields['Firstname'].required=False
+
+
+class ForgetPasswordUser(forms.ModelForm):
+    class Meta:
+        model=CustomUser
+        fields=('Mobile',)
+        widgets={
+               'Mobile':forms.TextInput(attrs={
+                   'placeholder':'Mobile',
+                   'class':'form-control col-7'
+              }),
+        }

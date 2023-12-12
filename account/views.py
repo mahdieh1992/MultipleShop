@@ -1,14 +1,16 @@
 import datetime
 
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,reverse
 from django.contrib.auth import login,logout,authenticate,get_user_model
 from django.views.generic import View
 from .forms import FormLoginUser,RegisterUserForm,ForgetPasswordUser
-from .models import CustomUser,ForgetPassUser
+from .models import CustomUser,Restpassuser
 from random import randint
 from melipayamak import Api
 from datetime import datetime,timedelta
 from django.contrib import messages
+from django.utils.crypto import get_random_string
+
 def RgisterUser(request):
     form=RegisterUserForm()
     if request.method=='POST':
@@ -81,9 +83,10 @@ class ForgetPassView(View):
             mobile=form.cleaned_data['Mobile']
             if CustomUser.objects.filter(Mobile=mobile).exists():
                 rand=randint(10000,99999)
+                token=get_random_string(length=32)
                 now=datetime.now()
                 now5=now+timedelta(minutes=2)
-                ForgetPassUser.objects.create(mobile=mobile,code=rand,ExpireTime=now5)
+                Restpassuser.objects.create(mobile=mobile,code=rand,ExpireTime=now5,token=token)
                 username = '09122435833'
                 password = 'qweQWE123!@#'
                 api = Api(username, password)
@@ -92,8 +95,8 @@ class ForgetPassView(View):
                 _from = '50004001435833'
                 text = f'Your code is {rand}'
                 response = sms.send(to, _from, text)
-                print(response)
-                return redirect('account:Confirm')
+
+                return redirect(reverse('account:Confirm')+f'?token={token}')
             form.add_error('Mobile',f'{mobile} is not valid')
 
         return render(request,'account/ForgetPassword.html',{
@@ -109,7 +112,8 @@ class ConfirmCode(View):
 
     def post(self,request):
         confirmcode=request.POST['code']
-        if ForgetPassUser.objects.filter(code=confirmcode).exists():
+        gettoken=request.GET.get('token')
+        if Restpassuser.objects.filter(code=confirmcode,token=gettoken).exists():
             return redirect('Home:main')
 
         messages.info(request,f'{confirmcode} is not valid')

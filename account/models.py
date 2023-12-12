@@ -33,10 +33,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
-class ForgetPassUser(models.Model):
+class Restpassuser(models.Model):
+    token=models.CharField(max_length=200,null=True)
     mobile=models.CharField(max_length=11)
     code=models.IntegerField()
     ExpireTime=models.DateTimeField()
-
 
 

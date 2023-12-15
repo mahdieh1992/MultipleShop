@@ -1,26 +1,22 @@
-from django.test import SimpleTestCase
+from django.test import SimpleTestCase,TestCase
 from django.urls import reverse,resolve
 from .views import Homepage
 
 
-class Home_page_test (SimpleTestCase):
+class Home_page_test (TestCase):
+
     def setUp(self) -> None:
         url=reverse('Home:main')
-        self.response= self.client.get(url)
+        self.response=self.client.get(url)
 
-    def url_exists(self):
-        self.assertEqual(self.response.status_code,200)
+    def Template_test(self):
+        self.assertEqual(self.response.status_code, 200)
+        self.assertTemplateUsed(self.response, 'account/register.html')
+        self.assertContains(self.response, 'hi')
+        self.assertNotContains(self.response, 'not text')
 
-    def templated_exits(self):
-        self.assertTemplateUsed(self.response)
+    def View_Test(self):
+        view=resolve('account/Register')
+        self.assertEqual(view.func.__name__,Homepage.__name__)
 
-    def contain_htmltext(self):
-        self.assertContains(self.response,'hi')
-
-    def not_contain_htmltext(self):
-        self.assertNotContains(self.response, 'I should not page')
-
-    def test_url_resolve_View(self):
-        view=resolve('/')
-        self.assertEqual(view.func.__name__,Homepage.as_view().__name__)
 # Create your tests here.

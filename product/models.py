@@ -37,7 +37,7 @@ class product(models.Model):
     color=models.ManyToManyField(Color,related_name='products',null=True,blank=True)
 
     def __str__(self):
-        return f'{self.title}'
+        return f'{self.slug}'
 
     def get_absolute_url(self):
         return reverse('product:detail',kwargs={'slug':self.slug})

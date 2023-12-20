@@ -120,3 +120,5 @@ class ConfirmCode(View):
         return render(request, 'account/Confirm.html', {
 
             })
+
+

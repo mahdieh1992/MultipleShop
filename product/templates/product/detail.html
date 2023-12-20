@@ -34,7 +34,7 @@
                     </div>
                     <h3 class="font-weight-semi-bold mb-4">${{ ProductDetail.price }}</h3>
                     <p class="mb-4">{{ ProductDetail.body }}</p>
-                    <form method="post" action="{% url 'cart:AddCart' ProductDetail.slug %}">{% csrf_token %}
+                    <form method="post" action="{% url 'Basket:AddCart' ProductDetail.slug %}">{% csrf_token %}
                          <div class="d-flex mb-3">
 
                           {% if ProductDetail.size.all %}

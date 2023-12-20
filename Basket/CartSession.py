@@ -16,7 +16,7 @@ class MyCart:
         for key,item in ccart.items():
             item['product']=product.objects.get(slug=item['productid'])
             item['total']=int(item['price'])*int(item['quantity'])
-            item['k']=key
+            item['pk']=key
             yield item
 
     def unicode_generate_id(self,productid,color,size):
@@ -41,8 +41,11 @@ class MyCart:
 
     def total(self):
         cart=self.mycart
-        total=sum([item['total'] for item in cart.values()])
-        return total
+        m=list( int(item['price'])*int(item['quantity']) for item in cart.values())
+        sumprice = sum(m)
+        return sumprice
 
+    def remove(self):
+        del self.session[SESSION_KEY]
 
 

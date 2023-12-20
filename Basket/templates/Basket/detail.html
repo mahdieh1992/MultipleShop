@@ -28,7 +28,7 @@
                             <td class="align-middle">{{ item.size }}</td>
                             <td class="align-middle">{{ item.quantity }}</td>
                             <td class="align-middle">{{ item.total }}</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-danger"><a href="{% url 'cart:dletecart'   item.k  %}"><i class="fa fa-times"></i></a></button></td>
+                            <td class="align-middle"><button class="btn btn-sm btn-danger"><a href="{% url 'Basket:dletecart'   item.pk  %}"><i class="fa fa-times"></i></a></button></td>
                         </tr>
                       {% endfor %}
 
@@ -36,14 +36,7 @@
                 </table>
             </div>
             <div class="col-lg-4">
-                <form class="mb-30" action="">
-                    <div class="input-group">
-                        <input type="text" class="form-control border-0 p-4" placeholder="Coupon Code">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary">Apply Coupon</button>
-                        </div>
-                    </div>
-                </form>
+
                 <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Cart Summary</span></h5>
                 <div class="bg-light p-30 mb-5">
                     <div class="pt-2">
@@ -51,7 +44,7 @@
                             <h5>Total</h5>
                             <h5>${{ cart.total }}</h5>
                         </div>
-                        <button class="btn btn-block btn-primary font-weight-bold my-3 py-3">Proceed To Checkout</button>
+                        <a href="{% url 'Basket:Orderdetail'  %}"><button class="btn btn-block btn-primary font-weight-bold my-3 py-3">Proceed To Checkout</button></a>
                     </div>
                 </div>
             </div>

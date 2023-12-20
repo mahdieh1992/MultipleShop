@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.shortcuts import reverse
-
+from account.models import CustomUser
 
 class Categories(models.Model):
     title=models.CharField(max_length=100,null=True)
@@ -33,8 +33,8 @@ class product(models.Model):
     Discount=models.SmallIntegerField()
     image=models.ImageField(upload_to='product/image',null=True)
     body=models.TextField(null=True)
-    size=models.ManyToManyField(Size,related_name='products',null=True,blank=True)
-    color=models.ManyToManyField(Color,related_name='products',null=True,blank=True)
+    size=models.ManyToManyField(Size,related_name='products',blank=True)
+    color=models.ManyToManyField(Color,related_name='products',blank=True)
 
     def __str__(self):
         return f'{self.slug}'

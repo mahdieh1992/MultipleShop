@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import CustomUser
+from .models import CustomUser,AdressUser
 
 
 class FormLoginUser(forms.Form):
@@ -102,3 +102,26 @@ class ForgetPasswordUser(forms.ModelForm):
                    'class':'form-control col-7'
               }),
         }
+
+
+class AdressForm(forms.ModelForm):
+    class Meta:
+        model=AdressUser
+        exclude=('userid',)
+        widgets={
+            'title':forms.TextInput(attrs={
+                'class':'form-control form-group',
+                'placeholder':'Adress',
+                'size':60
+            }),
+
+            'ZipCode':forms.TextInput(attrs={
+                'class': 'form-control form-group',
+                'placeholder':'ZipCode'
+            }),
+            'mobile':forms.TextInput(attrs={
+                'class':'form-control form-group',
+                'placeholder':'mobile'
+            })
+        }
+

@@ -8,5 +8,6 @@ urlpatterns=[
     path('deletecart/<str:pk>', views.Deletecart.as_view(), name='dletecart'),
     path('OrderDetail', views.OrderDtail, name='Orderdetail'),
     path('OrderDetailView/<int:id>', views.OrderDetailView, name='OrderDetailView'),
-    path('coupn<int:pk>', views.ApplyCoupon.as_view(), name='Couponname')
+    path('coupn<int:pk>', views.ApplyCoupon.as_view(), name='Couponname'),
+    path('adress', views.Adresuser.as_view(), name='adress'),
 ]

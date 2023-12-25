@@ -40,5 +40,8 @@ class Restpassuser(models.Model):
     ExpireTime=models.DateTimeField()
 
 
-
-
+class AdressUser(models.Model):
+    userid=models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='adressuser')
+    title=models.CharField()
+    ZipCode=models.IntegerField(null=True)
+    mobile=models.IntegerField(null=True)

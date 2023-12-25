@@ -63,6 +63,20 @@
                         <a href="{% url 'Basket:Orderdetail' %}"><button class="btn btn-block btn-primary font-weight-bold my-3 py-3">Pay</button></a>
                     </div>
                 </div>
+                <div>
+                    {% if request.user.adressuser.all %}
+
+                        <select  class="form-control">
+                            {%for adress  in request.user.adressuser.all %}
+                                <option class="form-control">{{adress.title}}</option>
+                            {%endfor%}
+                        </select>
+
+
+                    {%else%}
+                        <a href="{% url 'Basket:adress' %}?next={% url 'Basket:OrderDetailView' orderget.id %}"><button class="btn btn-block btn-primary font-weight-bold my-3 py-3">Don't have any adress Please enter a adress</button></a>
+                    {%endif%}
+                </div>
             </div>
         </div>
     </div>

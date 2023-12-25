@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'Multiple_Shop.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
+        'NAME': 'multishop',
         'USER':'postgres',
         'PASSWORD':'postgres',
         'HOST': 'localhost',

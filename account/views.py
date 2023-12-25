@@ -11,6 +11,7 @@ from datetime import datetime,timedelta
 from django.contrib import messages
 from django.utils.crypto import get_random_string
 
+
 def RgisterUser(request):
     form=RegisterUserForm()
     if request.method=='POST':
@@ -45,6 +46,7 @@ class LoginUser(View):
 
     def post(self,request):
         form=FormLoginUser(request.POST)
+        nextpage=request.GET.get('next')
 
         if form.is_valid():
             email=form.cleaned_data['email']
@@ -52,7 +54,10 @@ class LoginUser(View):
             user=authenticate(email=email,password=password)
             if user is not None:
                 if user.is_active:
-                    login(request,user)
+                    login(request, user)
+                    if nextpage is not None:
+                        return redirect(nextpage)
+
                     return redirect('Home:main')
                 form.add_error('email','Your account is blocked')
             elif not CustomUser.objects.filter(email=email).exists():

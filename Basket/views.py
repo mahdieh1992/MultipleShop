@@ -6,19 +6,14 @@ from .models import Discount,Orderdetailuser,OrderUser
 from django.contrib import messages
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-from account.models import CustomUser
-
+from account.models import CustomUser,AdressUser
+from account.forms import AdressForm
 now = timezone.now()
-
 
 class Cart(View):
     def get(self,request):
         cart=MyCart(request)
-        return render(request, 'Basket/detail.html', {'cart':cart
-
-                                                      })
-
-
+        return render(request, 'Basket/detail.html', {'cart':cart})
 class AddCart(View):
     def post(self,request,slug):
         getslug = get_object_or_404(product,slug=slug)
@@ -37,12 +32,9 @@ class Deletecart(View):
 
 
 class ApplyCoupon(View):
-
     def post(self,request,pk):
         couponname=request.POST.get('CouponName')
-        print(couponname)
         orderuserid = OrderUser.objects.get(id=pk)
-        print(orderuserid)
         CouponObject=get_object_or_404(Discount,DiscountName=couponname)
         if CouponObject.Quantity==0 or CouponObject.Expiredate < now:
             messages.info(request,'Coupon  Finished')
@@ -63,6 +55,7 @@ def OrderDtail(request):
         orderid=order.id
         return redirect(reverse('Basket:OrderDetailView',kwargs={'id':orderid}))
 
+
 def OrderDetailView(request,id):
     orderget=OrderUser.objects.get(id=id)
     orderdetail=orderget.OrderDtailid.all()
@@ -72,4 +65,24 @@ def OrderDetailView(request,id):
         'orderget':orderget
        }
                   )
+
+
+class Adresuser(View):
+    def get(self,request):
+        form=AdressForm()
+        return render(request, 'Basket/Adress.html', {'form': form})
+
+    def post(self,request):
+        form=AdressForm(request.POST)
+        nextpage=request.GET.get('next')
+        if form.is_valid():
+            title=request.POST['title']
+            zipcode= request.POST['ZipCode']
+            mobile= request.POST['mobile']
+            AdressUser.objects.create(title=title,userid=request.user,ZipCode=zipcode,mobile=mobile)
+            if request.GET:
+                return redirect(nextpage)
+            return redirect('Home:main')
+        return render(request, 'Basket/Adress.html', {'form':form})
+
 
